@@ -1,9 +1,13 @@
 export default [
     {
-        name: 'base', 
-        data: {}, 
+        name: "base",
+        data: {},
         items: [
-            { name: 'lennaTexture', source: '/assets/lenna.png', type: 'texture'}
-        ]
-    }
+            {
+                name: "lennaTexture",
+                source: "/assets/lenna.png",
+                type: "texture",
+            },
+        ],
+    },
 ]

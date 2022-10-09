@@ -1,13 +1,13 @@
-import * as THREE from 'three'
-import GUI from 'lil-gui'
-import Time from './utils/Time'
-import Sizes from './utils/Sizes'
-import Stats from './utils/Stats'
-import Camera from './Camera'
-import Renderer from './Renderer'
-import Resources from './Resources'
-import Assets from './Assets'
-import World from './World'
+import * as THREE from "three"
+import GUI from "lil-gui"
+import Time from "./utils/Time"
+import Sizes from "./utils/Sizes"
+import Stats from "./utils/Stats"
+import Camera from "./Camera"
+import Renderer from "./Renderer"
+import Resources from "./Resources"
+import Assets from "./Assets"
+import World from "./World"
 
 interface OptionProps {
     targetElement: HTMLDivElement
@@ -20,8 +20,7 @@ export interface Config {
     height?: number
 }
 
-export default class Experience
-{
+export default class Experience {
     static instance: Experience
     targetElement?: HTMLDivElement
     time?: Time
@@ -39,7 +38,6 @@ export default class Experience
     world: World
 
     constructor(_options?: OptionProps) {
-
         if (Experience.instance) {
             return Experience.instance
         } else {
@@ -50,7 +48,7 @@ export default class Experience
         this.targetElement = _options?.targetElement
 
         if (!this.targetElement) {
-            console.warn('Missing \'targetElement\' property')
+            console.warn("Missing 'targetElement' property")
             return
         }
 
@@ -66,7 +64,7 @@ export default class Experience
         this.setResources()
         this.setWorld()
 
-        this.sizes.on('resize', () => {
+        this.sizes.on("resize", () => {
             this.resize()
         })
 
@@ -77,10 +75,13 @@ export default class Experience
         this.config = {}
 
         // debug
-        this.config.debug = window.location.hash === '#debug'
+        this.config.debug = window.location.hash === "#debug"
 
         // pixel ratio
-        this.config.pixelRatio = Math.min(Math.max(window.devicePixelRatio, 1), 2)
+        this.config.pixelRatio = Math.min(
+            Math.max(window.devicePixelRatio, 1),
+            2
+        )
 
         // width and height
         const boundings = this.targetElement?.getBoundingClientRect()
@@ -139,16 +140,16 @@ export default class Experience
         const boundings = this.targetElement.getBoundingClientRect()
         this.config.width = boundings.width
         this.config.height = boundings.height
-        
-        this.config.pixelRatio = Math.min(Math.max(window.devicePixelRatio, 1), 2)
+
+        this.config.pixelRatio = Math.min(
+            Math.max(window.devicePixelRatio, 1),
+            2
+        )
 
         if (this.camera) this.camera.resize()
         if (this.renderer) this.renderer.resize()
         if (this.world) this.world.resize()
-        
     }
 
-    destory(): void {
-
-    }
+    destory(): void {}
 }

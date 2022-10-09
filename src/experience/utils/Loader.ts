@@ -1,12 +1,11 @@
-import Experience from "../Experience";
-import EventEmitter from "./EventEmitter";
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
-import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader'
-import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader'
-import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader'
+import Experience from "../Experience"
+import EventEmitter from "./EventEmitter"
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader"
+import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader"
+import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader"
+import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader"
 
 export default class Loader extends EventEmitter {
-
     experience: Experience
     renderer: any
 
@@ -34,36 +33,34 @@ export default class Loader extends EventEmitter {
 
         // image
         this.loaders.push({
-            extensions: ['jpg', 'png'],
+            extensions: ["jpg", "png"],
             action: (_resource) => {
                 const image = new Image()
-                image.addEventListener('load', () => {
+                image.addEventListener("load", () => {
                     this.fileLoadEnd(_resource, image)
                 })
-                image.addEventListener('error', () => {
+                image.addEventListener("error", () => {
                     this.fileLoadEnd(_resource, image)
                 })
                 image.src = _resource.source
-            }
+            },
         })
 
         // Draco
         const dracoLoader = new DRACOLoader()
-        dracoLoader.setDecoderPath('draco/')
-        dracoLoader.setDecoderConfig({ type: 'js' })
+        dracoLoader.setDecoderPath("draco/")
+        dracoLoader.setDecoderConfig({ type: "js" })
 
         this.loaders.push({
-            extensions: ['drc'],
-            action: (_resource) =>
-            {
-                dracoLoader.load(_resource.source, (_data) =>
-                {
+            extensions: ["drc"],
+            action: (_resource) => {
+                dracoLoader.load(_resource.source, (_data) => {
                     this.fileLoadEnd(_resource, _data)
 
                     // instance method
                     dracoLoader.dispose()
                 })
-            }
+            },
         })
 
         // GLTF
@@ -71,71 +68,61 @@ export default class Loader extends EventEmitter {
         gltfLoader.setDRACOLoader(dracoLoader)
 
         this.loaders.push({
-            extensions: ['glb', 'gltf'],
-            action: (_resource) =>
-            {
-                gltfLoader.load(_resource.source, (_data) =>
-                {
+            extensions: ["glb", "gltf"],
+            action: (_resource) => {
+                gltfLoader.load(_resource.source, (_data) => {
                     this.fileLoadEnd(_resource, _data)
                 })
-            }
+            },
         })
 
         // FBX
         const fbxLoader = new FBXLoader()
 
         this.loaders.push({
-            extensions: ['fbx'],
-            action: (_resource) =>
-            {
-                fbxLoader.load(_resource.source, (_data) =>
-                {
+            extensions: ["fbx"],
+            action: (_resource) => {
+                fbxLoader.load(_resource.source, (_data) => {
                     this.fileLoadEnd(_resource, _data)
                 })
-            }
+            },
         })
 
         // RGBE | HDR
         const rgbeLoader = new RGBELoader()
 
         this.loaders.push({
-            extensions: ['hdr'],
-            action: (_resource) =>
-            {
-                rgbeLoader.load(_resource.source, (_data) =>
-                {
+            extensions: ["hdr"],
+            action: (_resource) => {
+                rgbeLoader.load(_resource.source, (_data) => {
                     this.fileLoadEnd(_resource, _data)
                 })
-            }
+            },
         })
     }
 
     /**
      * Load
      */
-    load(_resources = [])
-    {
-        for(const _resource of _resources)
-        {
+    load(_resources = []) {
+        for (const _resource of _resources) {
             this.toLoad++
             const extensionMatch = _resource.source.match(/\.([a-z]+)$/)
 
-            if(typeof extensionMatch[1] !== 'undefined')
-            {
+            if (typeof extensionMatch[1] !== "undefined") {
                 const extension = extensionMatch[1]
-                const loader = this.loaders.find((_loader) => _loader.extensions.find((_extension) => _extension === extension))
+                const loader = this.loaders.find((_loader) =>
+                    _loader.extensions.find(
+                        (_extension) => _extension === extension
+                    )
+                )
 
-                if(loader)
-                {
+                if (loader) {
                     loader.action(_resource)
-                }
-                else
-                {
+                } else {
                     console.warn(`Cannot found loader for ${_resource}`)
                 }
-            }
-            else
-            {
+            } else {
                 console.warn(`Cannot found extension of ${_resource}`)
             }
         }
@@ -144,17 +131,14 @@ export default class Loader extends EventEmitter {
     /**
      * File load end
      */
-    fileLoadEnd(_resource, _data)
-    {
+    fileLoadEnd(_resource, _data) {
         this.loaded++
         this.items[_resource.name] = _data
 
-        this.trigger('fileEnd', [_resource, _data])
+        this.trigger("fileEnd", [_resource, _data])
 
-        if(this.loaded === this.toLoad)
-        {
-            this.trigger('end')
+        if (this.loaded === this.toLoad) {
+            this.trigger("end")
         }
     }
-
 }

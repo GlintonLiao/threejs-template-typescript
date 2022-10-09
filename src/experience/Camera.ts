@@ -1,9 +1,8 @@
-import * as THREE from 'three'
-import Experience from './Experience'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import * as THREE from "three"
+import Experience from "./Experience"
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 
 export default class Camera {
-
     experience: Experience
     config: Experience["config"]
     debug: Experience["debug"]
@@ -28,15 +27,20 @@ export default class Camera {
         this.scene = this.experience.scene
 
         // setup
-        this.mode = 'debug'
+        this.mode = "debug"
 
         this.setInstance()
         this.setModes()
     }
 
     setInstance(): void {
-        this.instance = new THREE.PerspectiveCamera(25, this.config.width / this.config.height, 0.1, 150)
-        this.instance.rotation.reorder('XYZ')
+        this.instance = new THREE.PerspectiveCamera(
+            25,
+            this.config.width / this.config.height,
+            0.1,
+            150
+        )
+        this.instance.rotation.reorder("XYZ")
         this.scene.add(this.instance)
     }
 
@@ -46,15 +50,18 @@ export default class Camera {
         // default
         this.modes.default = {}
         this.modes.default.instance = this.instance.clone()
-        this.modes.default.instance.rotation.reorder('YXZ')
+        this.modes.default.instance.rotation.reorder("YXZ")
 
         // debug
         this.modes.debug = {}
         this.modes.debug.instance = this.instance.clone()
-        this.modes.debug.instance.rotation.reorder('YXZ')
+        this.modes.debug.instance.rotation.reorder("YXZ")
         this.modes.debug.instance.position.set(5, 5, 5)
-        
-        this.modes.debug.orbitControls = new OrbitControls(this.modes.debug.instance, this.targetElement)
+
+        this.modes.debug.orbitControls = new OrbitControls(
+            this.modes.debug.instance,
+            this.targetElement
+        )
         this.modes.debug.orbitControls.enabled = this.modes.debug.active
         this.modes.debug.orbitControls.screenSpacePanning = true
         this.modes.debug.orbitControls.enableKeys = false
@@ -63,20 +70,20 @@ export default class Camera {
         this.modes.debug.orbitControls.update()
     }
 
-    resize(): void
-    {
+    resize(): void {
         this.instance.aspect = this.config.width / this.config.height
         this.instance.updateProjectionMatrix()
 
-        this.modes.default.instance.aspect = this.config.width / this.config.height
+        this.modes.default.instance.aspect =
+            this.config.width / this.config.height
         this.modes.default.instance.updateProjectionMatrix()
 
-        this.modes.debug.instance.aspect = this.config.width / this.config.height
+        this.modes.debug.instance.aspect =
+            this.config.width / this.config.height
         this.modes.debug.instance.updateProjectionMatrix()
     }
 
-    update(): void
-    {
+    update(): void {
         // Update debug orbit controls
         this.modes.debug.orbitControls.update()
 
@@ -86,8 +93,7 @@ export default class Camera {
         this.instance.updateMatrixWorld() // To be used in projection
     }
 
-    destroy()
-    {
+    destroy() {
         this.modes.debug.orbitControls.destroy()
     }
 }

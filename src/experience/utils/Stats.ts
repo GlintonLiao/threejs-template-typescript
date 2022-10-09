@@ -1,4 +1,4 @@
-import StatsJs from 'stats.js'
+import StatsJs from "stats.js"
 
 interface Render {
     context?: any
@@ -8,7 +8,6 @@ interface Render {
 }
 
 export default class Stats {
-
     instance: StatsJs
     active: boolean
     max: number
@@ -17,7 +16,6 @@ export default class Stats {
     queryCreated?: boolean
 
     constructor(_active: boolean) {
-
         this.instance = new StatsJs()
         this.instance.showPanel(3)
 
@@ -40,16 +38,19 @@ export default class Stats {
 
     setRenderPanel(_context: any): void {
         this.render.context = _context
-        this.render.extension = this.render.context.getExtension('EXT_disjoint_timer_query_webgl2')
+        this.render.extension = this.render.context.getExtension(
+            "EXT_disjoint_timer_query_webgl2"
+        )
         this.render.panel = this.instance.showPanel(1)
 
-        const webGL2 = typeof WebGL2RenderingContext !== 'undefined' && _context instanceof WebGL2RenderingContext
+        const webGL2 =
+            typeof WebGL2RenderingContext !== "undefined" &&
+            _context instanceof WebGL2RenderingContext
 
         if (!webGL2 || !this.render.extension) this.deactivate()
     }
 
     beforeRender(): void {
-
         if (!this.active) return
 
         // setup
@@ -57,59 +58,62 @@ export default class Stats {
         let queryResultAvailable = false
 
         if (this.render.query) {
-            queryResultAvailable = this.render.context.getQueryParameter(this.render.query, this.render.context.QUERY_RESULT_AVALIABLE)
-            const disjoint = this.render.context.getParameter(this.render.extension.GPU_DISJOINT_EXT)
-            if(queryResultAvailable && !disjoint) {
-                const elapsedNanos = this.render.context.getQueryParameter(this.render.query, this.render.context.QUERY_RESULT)
-                const panelValue = Math.min(elapsedNanos / 1000 / 1000, this.max)
-    
-                if(panelValue === this.max && this.ignoreMaxed)
-                {
-                    
-                }
-                else
-                {
+            queryResultAvailable = this.render.context.getQueryParameter(
+                this.render.query,
+                this.render.context.QUERY_RESULT_AVALIABLE
+            )
+            const disjoint = this.render.context.getParameter(
+                this.render.extension.GPU_DISJOINT_EXT
+            )
+            if (queryResultAvailable && !disjoint) {
+                const elapsedNanos = this.render.context.getQueryParameter(
+                    this.render.query,
+                    this.render.context.QUERY_RESULT
+                )
+                const panelValue = Math.min(
+                    elapsedNanos / 1000 / 1000,
+                    this.max
+                )
+
+                if (panelValue === this.max && this.ignoreMaxed) {
+                } else {
                     this.render.panel.update(panelValue, this.max)
                 }
             }
         }
 
         // If query result available or no query yet
-        if(queryResultAvailable || !this.render.query)
-        {
+        if (queryResultAvailable || !this.render.query) {
             // Create new query
             this.queryCreated = true
             this.render.query = this.render.context.createQuery()
-            this.render.context.beginQuery(this.render.extension.TIME_ELAPSED_EXT, this.render.query)
+            this.render.context.beginQuery(
+                this.render.extension.TIME_ELAPSED_EXT,
+                this.render.query
+            )
         }
     }
-  
-    afterRender(): void
-    {
-        if(!this.active)
-        {
+
+    afterRender(): void {
+        if (!this.active) {
             return
         }
-        
+
         // End the query (result will be available "later")
-        if(this.queryCreated)
-        {
+        if (this.queryCreated) {
             this.render.context.endQuery(this.render.extension.TIME_ELAPSED_EXT)
         }
     }
 
-    update(): void
-    {
-        if(!this.active)
-        {
+    update(): void {
+        if (!this.active) {
             return
         }
 
         this.instance.update()
     }
 
-    destroy(): void
-    {
+    destroy(): void {
         this.deactivate()
     }
 }

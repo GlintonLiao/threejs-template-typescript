@@ -4,19 +4,15 @@ interface Callbacks {
 }
 
 interface Name {
-    original?: string, 
-    value?: string, 
-    namespace?: string,
+    original?: string
+    value?: string
+    namespace?: string
 }
 
-export default class
-{
+export default class {
     callbacks: Callbacks
-    /**
-     * Constructor
-     */
-    constructor()
-    {
+
+    constructor() {
         this.callbacks = {}
         this.callbacks.base = {}
     }
@@ -24,20 +20,17 @@ export default class
     /**
      * On
      */
-    on(_names: string, callback: (_resource?: any, _data?: any) => any): any
-    {
+    on(_names: string, callback: (_resource?: any, _data?: any) => any): any {
         const that = this
 
         // Errors
-        if(typeof _names === 'undefined' || _names === '')
-        {
-            console.warn('wrong names')
+        if (typeof _names === "undefined" || _names === "") {
+            console.warn("wrong names")
             return false
         }
 
-        if(typeof callback === 'undefined')
-        {
-            console.warn('wrong callback')
+        if (typeof callback === "undefined") {
+            console.warn("wrong callback")
             return false
         }
 
@@ -45,39 +38,36 @@ export default class
         const names = this.resolveNames(_names)
 
         // Each name
-        names.forEach(function(_name: string): void
-        {
+        names.forEach(function (_name: string): void {
             // Resolve name
             const name = that.resolveName(_name)
 
             // Create namespace if not exist
-            if(!(that.callbacks[ name.namespace ] instanceof Object))
-                that.callbacks[ name.namespace ] = {}
+            if (!(that.callbacks[name.namespace] instanceof Object))
+                that.callbacks[name.namespace] = {}
 
             // Create callback if not exist
-            if(!(that.callbacks[ name.namespace ][ name.value ] instanceof Array))
-                that.callbacks[ name.namespace ][ name.value ] = []
+            if (!(that.callbacks[name.namespace][name.value] instanceof Array))
+                that.callbacks[name.namespace][name.value] = []
 
             // Add callback
-            that.callbacks[ name.namespace ][ name.value ].push(callback)
+            that.callbacks[name.namespace][name.value].push(callback)
         })
 
-        console.log(this);
-        
+        console.log(this)
+
         return this
     }
 
     /**
      * Off
      */
-    off(_names: string): any
-    {
+    off(_names: string): any {
         const that = this
 
         // Errors
-        if(typeof _names === 'undefined' || _names === '')
-        {
-            console.warn('wrong name')
+        if (typeof _names === "undefined" || _names === "") {
+            console.warn("wrong name")
             return false
         }
 
@@ -85,45 +75,50 @@ export default class
         const names = this.resolveNames(_names)
 
         // Each name
-        names.forEach(function(_name: string)
-        {
+        names.forEach(function (_name: string) {
             // Resolve name
             const name = that.resolveName(_name)
 
             // Remove namespace
-            if(name.namespace !== 'base' && name.value === '')
-            {
-                delete that.callbacks[ name.namespace ]
+            if (name.namespace !== "base" && name.value === "") {
+                delete that.callbacks[name.namespace]
             }
 
             // Remove specific callback in namespace
-            else
-            {
+            else {
                 // Default
-                if(name.namespace === 'base')
-                {
+                if (name.namespace === "base") {
                     // Try to remove from each namespace
-                    for(const namespace in that.callbacks)
-                    {
-                        if(that.callbacks[ namespace ] instanceof Object && that.callbacks[ namespace ][ name.value ] instanceof Array)
-                        {
-                            delete that.callbacks[ namespace ][ name.value ]
+                    for (const namespace in that.callbacks) {
+                        if (
+                            that.callbacks[namespace] instanceof Object &&
+                            that.callbacks[namespace][name.value] instanceof
+                                Array
+                        ) {
+                            delete that.callbacks[namespace][name.value]
 
                             // Remove namespace if empty
-                            if(Object.keys(that.callbacks[ namespace ]).length === 0)
-                                delete that.callbacks[ namespace ]
+                            if (
+                                Object.keys(that.callbacks[namespace])
+                                    .length === 0
+                            )
+                                delete that.callbacks[namespace]
                         }
                     }
                 }
 
                 // Specified namespace
-                else if(that.callbacks[ name.namespace ] instanceof Object && that.callbacks[ name.namespace ][ name.value ] instanceof Array)
-                {
-                    delete that.callbacks[ name.namespace ][ name.value ]
+                else if (
+                    that.callbacks[name.namespace] instanceof Object &&
+                    that.callbacks[name.namespace][name.value] instanceof Array
+                ) {
+                    delete that.callbacks[name.namespace][name.value]
 
                     // Remove namespace if empty
-                    if(Object.keys(that.callbacks[ name.namespace ]).length === 0)
-                        delete that.callbacks[ name.namespace ]
+                    if (
+                        Object.keys(that.callbacks[name.namespace]).length === 0
+                    )
+                        delete that.callbacks[name.namespace]
                 }
             }
         })
@@ -134,12 +129,10 @@ export default class
     /**
      * Trigger
      */
-    trigger(_name: string, _args?: any): any
-    {
+    trigger(_name: string, _args?: any): any {
         // Errors
-        if(typeof _name === 'undefined' || _name === '')
-        {
-            console.warn('wrong name')
+        if (typeof _name === "undefined" || _name === "") {
+            console.warn("wrong name")
             return false
         }
 
@@ -154,22 +147,22 @@ export default class
         let name = this.resolveNames(_name)
 
         // Resolve name
-        name = this.resolveName(name[ 0 ])
+        name = this.resolveName(name[0])
 
         // Default namespace
-        if (name.namespace === 'base')
-        {
+        if (name.namespace === "base") {
             // Try to find callback in each namespace
-            for(const namespace in that.callbacks)
-            {
-                if(that.callbacks[ namespace ] instanceof Object && that.callbacks[ namespace ][ name.value ] instanceof Array)
-                {
-                    that.callbacks[ namespace ][ name.value ].forEach(function(callback: any)
-                    {
+            for (const namespace in that.callbacks) {
+                if (
+                    that.callbacks[namespace] instanceof Object &&
+                    that.callbacks[namespace][name.value] instanceof Array
+                ) {
+                    that.callbacks[namespace][name.value].forEach(function (
+                        callback: any
+                    ) {
                         result = callback.apply(that, args)
 
-                        if(typeof finalResult === 'undefined')
-                        {
+                        if (typeof finalResult === "undefined") {
                             finalResult = result
                         }
                     })
@@ -178,20 +171,18 @@ export default class
         }
 
         // Specified namespace
-        else if(this.callbacks[ name.namespace ] instanceof Object)
-        {
-            if(name.value === '')
-            {
-                console.warn('wrong name')
+        else if (this.callbacks[name.namespace] instanceof Object) {
+            if (name.value === "") {
+                console.warn("wrong name")
                 return this
             }
 
-            that.callbacks[ name.namespace ][ name.value ].forEach(function(callback: any)
-            {
+            that.callbacks[name.namespace][name.value].forEach(function (
+                callback: any
+            ) {
                 result = callback.apply(that, args)
 
-                if(typeof finalResult === 'undefined')
-                    finalResult = result
+                if (typeof finalResult === "undefined") finalResult = result
             })
         }
 
@@ -201,12 +192,11 @@ export default class
     /**
      * Resolve names
      */
-    resolveNames(_names: any): any
-    {
+    resolveNames(_names: any): any {
         let names = _names
-        names = names.replace(/[^a-zA-Z0-9 ,/.]/g, '')
-        names = names.replace(/[,/]+/g, ' ')
-        names = names.split(' ')
+        names = names.replace(/[^a-zA-Z0-9 ,/.]/g, "")
+        names = names.replace(/[,/]+/g, " ")
+        names = names.split(" ")
 
         return names
     }
@@ -214,22 +204,19 @@ export default class
     /**
      * Resolve name
      */
-    resolveName(name: string): any
-    {
+    resolveName(name: string): any {
         const newName: Name = {}
-        const parts = name.split('.')
+        const parts = name.split(".")
 
-        newName.original  = name
-        newName.value     = parts[ 0 ]
-        newName.namespace = 'base' // Base namespace
+        newName.original = name
+        newName.value = parts[0]
+        newName.namespace = "base" // Base namespace
 
         // Specified namespace
-        if(parts.length > 1 && parts[ 1 ] !== '')
-        {
-            newName.namespace = parts[ 1 ]
+        if (parts.length > 1 && parts[1] !== "") {
+            newName.namespace = parts[1]
         }
 
         return newName
     }
 }
-

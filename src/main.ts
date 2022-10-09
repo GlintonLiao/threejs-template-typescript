@@ -1,8 +1,8 @@
-import './style.css'
-import typescriptLogo from './typescript.svg'
-import { setupCounter } from './counter'
-import Experience from './experience/Experience'
+import "./style.css"
+import Experience from "./experience/Experience"
 
 const experience = new Experience({
-  targetElement: document.querySelector<HTMLDivElement>('.experience')
+    targetElement: document.querySelector<HTMLDivElement>(".experience"),
 })
+
+export { experience }

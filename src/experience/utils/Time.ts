@@ -1,7 +1,6 @@
-import EventEmitter from './EventEmitter'
+import EventEmitter from "./EventEmitter"
 
-export default class Time extends EventEmitter
-{
+export default class Time extends EventEmitter {
     start: number
     current: number
     elapsed: number
@@ -10,9 +9,8 @@ export default class Time extends EventEmitter
     ticker: number = 0
 
     constructor() {
-        
         super()
-        
+
         this.start = Date.now()
         this.current = this.start
         this.elapsed = 0
@@ -24,7 +22,7 @@ export default class Time extends EventEmitter
     }
 
     tick(): void {
-        this.ticker = window.requestAnimationFrame(this.tick);
+        this.ticker = window.requestAnimationFrame(this.tick)
 
         const current = Date.now()
 
@@ -33,11 +31,11 @@ export default class Time extends EventEmitter
         this.current = current
 
         if (this.delta > 60) this.delta = 60
-        if (this.playing) this.trigger('tick')
+        if (this.playing) this.trigger("tick")
     }
 
     // stop
     stop(): void {
-        window.cancelAnimationFrame(this.ticker);
+        window.cancelAnimationFrame(this.ticker)
     }
 }
