@@ -123,12 +123,12 @@ export default class Experience {
     }
 
     update(): void {
-        if (this.stats) this.stats.update()
+        this.stats?.update()
 
-        this.camera.update()
+        this.camera?.update()
 
-        if (this.world) this.world.update()
-        if (this.renderer) this.renderer.update()
+        this.world?.update()
+        this.renderer?.update()
 
         window.requestAnimationFrame(() => {
             this.update()
