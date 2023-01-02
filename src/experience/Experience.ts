@@ -124,9 +124,7 @@ export default class Experience {
 
     update(): void {
         this.stats?.update()
-
         this.camera?.update()
-
         this.world?.update()
         this.renderer?.update()
 
