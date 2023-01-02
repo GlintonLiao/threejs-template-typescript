@@ -15,6 +15,8 @@ pnpm run dev
 
 3. Open the browser to view the result.
 
+![iShot_2023-01-02_15 30 59](https://user-images.githubusercontent.com/37015336/210285217-7dd90919-605a-481c-8a1e-f13ec68bf24a.jpg)
+
 ## Structure
 
 ### World
