@@ -1,4 +1,6 @@
-# Three.js Starting Template
+# Three.js Starting Template in TypeScript
+
+This is a starting template for three.js projects, inspired by [threejs-template-complex](https://github.com/brunosimon/threejs-template-complex), and based on TypeScript, pnpm and Vite.
 
 ## Usage
 
@@ -11,7 +13,7 @@ pnpm install
 pnpm run dev
 ```
 
-3. Open the browser to see the result.
+3. Open the browser to view the result.
 
 ## Structure
 
